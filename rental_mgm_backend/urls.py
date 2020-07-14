@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from authentication.views import UserApiSignup
+from authentication.views import UserApiSignup, UserApiOtp
 
 router = routers.DefaultRouter()
 
@@ -24,5 +24,6 @@ router = routers.DefaultRouter()
 
 urlpatterns = [
     path('api/user/register', UserApiSignup.as_view(), name="SignUp"),
+    path('api/user/otp', UserApiOtp.as_view(), name="Otp"),
     path('admin/', admin.site.urls),
 ]
