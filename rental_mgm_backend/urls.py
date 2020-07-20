@@ -16,8 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from authentication.views import UserApiSignup, UserApiOtp
-
+from authentication.views import UserApiSignup, UserApiOtp, UserApiLogin, UserDeviceToken, UserLogOut
+from rest_framework_simplejwt import views as jwt_views
 router = routers.DefaultRouter()
 
 
@@ -25,5 +25,8 @@ router = routers.DefaultRouter()
 urlpatterns = [
     path('api/user/register', UserApiSignup.as_view(), name="SignUp"),
     path('api/user/otp', UserApiOtp.as_view(), name="Otp"),
+    path('api/user/login', UserApiLogin.as_view(), name="Login"),
+    path('api/user/token', UserDeviceToken.as_view(), name="Token"),
+    path('api/user/logout', UserLogOut.as_view(), name="Logout"),
     path('admin/', admin.site.urls),
 ]
