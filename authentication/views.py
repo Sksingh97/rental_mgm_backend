@@ -1,9 +1,9 @@
-from authentication.models import MyUser
+from authentication.models import MyUser, UserToken
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import status
 from rest_framework.views import APIView
-from authentication.serializers import UserSerializer
+from authentication.serializers import UserSerializer, UserDeviceSerializer
 from utils.email import account_created_mail
 import sys
 import random
@@ -139,12 +139,10 @@ class UserApiLogin(APIView):
             try:
                 print(request.data)
                 record = MyUser.objects.get(email=request.data["email"],password=request.data["password"])
-                print("Fetched Record : : ",record)
                 record.last_login = datetime.now()
                 record.save()
                 serializer = UserSerializer(record)
                 token = jws.sign({"user":serializer.data}, 'seKre8',  algorithm='HS256')
-                # print("TOKEN : : : :",token)
                 return sendSuccess({"user":serializer.data,"msg":"Login Success","token":token})
             except:
                 return sendFailure("Invalid Credentials")
@@ -153,12 +151,10 @@ class UserApiLogin(APIView):
                 idinfo = id_token.verify_oauth2_token(request.data["token"], grq.Request(), '659153366205-2e9ir8g196l41idvfdu1k3mc0vs3o5o0.apps.googleusercontent.com')
                 print(idinfo)
                 record = MyUser.objects.get(email=idinfo['email'],social_id=idinfo['sub'])
-                # record.last_login = datetime.now()
-                # record.save()
-                # expiry = datetime.date.today() + timedelta(days=50)
+                record.last_login = datetime.now()
+                record.save()
                 serializer = UserSerializer(record)
                 token = jws.sign({"user":serializer.data}, 'seKre8',  algorithm='HS256')
-                # print("TOKEN : : : :",token)
                 return sendSuccess({"user":serializer.data,"msg":"Login Success","token":token})
             except:
                 print("Error : :  : : :",sys.exc_info()[0])
@@ -166,13 +162,11 @@ class UserApiLogin(APIView):
         elif request.data["log_in_type"] == 2:
             try:
                 data = requests.get('https://graph.facebook.com/me?fields=name,email&access_token='+request.data['token'])
-                print("Social login : : : ",data.json())
                 record = MyUser.objects.get(social_id=data.json()['id'])
                 record.last_login = datetime.now()
                 record.save()
                 serializer = UserSerializer(record)
                 token = jws.sign({"user":serializer.data}, 'seKre8',  algorithm='HS256')
-                # print("TOKEN : : : :",token)
                 return sendSuccess({"user":serializer.data,"msg":"Login Success","token":token})
             except:
                 return sendFailure("Account Doesn't Exist Please Sign Up First 2")
@@ -183,10 +177,32 @@ class UserApiLogin(APIView):
 
 class UserDeviceToken(APIView):
     def post(self, request):
-        # print(request.data)
-        
-        # print(token_data["user"]["id"])
-        return sendSuccess({"msg":"REGISTERING USER DEVICE"})
+        print(request.data,request.user_profile)
+        device_object = {
+            "user_id":int(json.loads(request.user_profile)["id"]),
+            "token":request.data['fcm_token'],
+            "device_type":request.data['device_type']
+        }
+        try:
+            record = UserToken.objects.get(user_id = device_object["user_id"])
+            record.token = device_object["token"]
+            record.save()
+            serilized_data = UserDeviceSerializer(record)
+            print("RECORD : : UPDATED : : ",serilized_data.data)
+            return sendSuccess({"msg":"REGISTERING USER DEVICE"})
+        except:
+            print("ERROR : : : ",sys.exc_info()[0])
+            record = UserDeviceSerializer(data=device_object)
+            if record.is_valid():
+                record.save()
+                print("RECORD : : CREATED : : ",record.data)
+                return sendSuccess({"msg":"REGISTERING USER DEVICE"})
+            else:
+                print("UNABLE TO SAVE RECORD : : :")
+                return sendSuccess({})
+            
+            
+
 
 class UserLogOut(APIView):
     def post(self, request):

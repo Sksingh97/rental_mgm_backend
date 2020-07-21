@@ -29,16 +29,13 @@ class MyUser(AbstractUser):
     last_login = models.DateTimeField(blank=True, null=True)
     social_id = models.CharField(max_length=255, unique=True, null=True)
     userName = models.CharField(max_length=255, unique=True, null=True)
+    id_deleted = models.BooleanField(default=False)
 
 
     class Meta:
         ordering = ['id']
 
 class UserToken (models.Model):
-    user_id = models.OneToOneField(
-        MyUser,
-        on_delete=models.CASCADE,
-        primary_key=True,
-    )
+    user_id = models.ForeignKey(MyUser, on_delete=models.CASCADE, unique=True, null=True, default=None)
     token = models.CharField(max_length=555, blank=True, null=True)
     device_type = models.IntegerField(blank=True, null=True)

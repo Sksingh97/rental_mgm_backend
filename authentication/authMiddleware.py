@@ -4,6 +4,7 @@ from utils.responseHandler import sendSuccess, sendFailure, sendFailureFromMidw
 from django.http import HttpResponseForbidden 
 from jose import jws
 import json
+from rental_mgm_backend.message import get_message_by_key
 
 class AuthMiddleWare:
     def __init__(self, get_response):
@@ -12,30 +13,36 @@ class AuthMiddleWare:
 
     def __call__(self, request):
         allowed_route_without_auth = ['/api/user/register','/api/user/otp','/api/user/login','/api/user/logout']
-        print(request.path)
+        # print(request.path,request.user,dir(request))
+        request.POST = request.POST.copy()
         if request.method == "POST":
             if request.path in allowed_route_without_auth:
                 return self.get_response(request)
             else:
                 request_body = self.get_request_data(request)
-                token_data = self.get_token_data(request_body['token'])
+                token_data = self.get_token_data(request_body['Authorization'])
+                # print("DATA : :  :",token_data)
                 user_data = self.verify_user(token_data['id'])
-                print("MIDDLEWARE : : : will be checked",user_data)
-                # return sendFailure("Something went wrong")
-                # return self.get_response(request)
-                return sendFailureFromMidw("something went wrong")
+                # print("MIDDLEWARE : : : will be checked",user_data)
+                if(user_data['id_deleted']):
+                    return sendFailureFromMidw(get_message_by_key("AccountDeleted","en"))
+                if(not user_data['is_active']):
+                    return sendFailureFromMidw(get_message_by_key("AccountDeactivated","en"))
+                
+                request.user_profile = json.dumps({"id":user_data["id"]})
+
+                return self.get_response(request)
 
         else:
             if request.path in allowed_route_without_auth:
                 return self.get_response(request)
             else:
-                # token_data = json.loads(jws.verify(request.data['token'], 'seKre8', algorithms=['HS256']))
                 print("MIDDLEWARE : : : will be checked")
                 return self.get_response(request)
     
     def get_request_data(self, request):
-        if request.body:
-            return json.loads(request.body)
+        if request.headers:
+            return request.headers
         else:
             print("No Request Body")
             return False
