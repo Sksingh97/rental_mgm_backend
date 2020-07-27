@@ -16,22 +16,27 @@ class AuthMiddleWare:
         # print(request.path,request.user,dir(request))
         request.POST = request.POST.copy()
         if request.method == "POST":
-            if request.path in allowed_route_without_auth:
-                return self.get_response(request)
-            else:
-                request_body = self.get_request_data(request)
-                token_data = self.get_token_data(request_body['Authorization'])
-                # print("DATA : :  :",token_data)
-                user_data = self.verify_user(token_data['id'])
-                # print("MIDDLEWARE : : : will be checked",user_data)
-                if(user_data['id_deleted']):
-                    return sendFailureFromMidw(get_message_by_key("AccountDeleted","en"))
-                if(not user_data['is_active']):
-                    return sendFailureFromMidw(get_message_by_key("AccountDeactivated","en"))
-                
-                request.user_profile = json.dumps({"id":user_data["id"]})
 
+            if request.path in allowed_route_without_auth:
+                print("ALLOWED URL")
                 return self.get_response(request)
+            else: 
+                request_body = self.get_request_data(request)
+                if 'Authorization' in request_body.keys():
+                    token_data = self.get_token_data(request_body['Authorization'])
+                    print("DATA : :  :",token_data)
+                    user_data = self.verify_user(token_data['id'])
+                    # print("MIDDLEWARE : : : will be checked",user_data)
+                    if(user_data['id_deleted']):
+                        return sendFailureFromMidw(get_message_by_key("AccountDeleted","en"))
+                    if(not user_data['is_active']):
+                        return sendFailureFromMidw(get_message_by_key("AccountDeactivated","en"))
+                    
+                    request.user_profile = json.dumps({"id":user_data["id"]})
+
+                    return self.get_response(request)
+                else:
+                    return sendFailureFromMidw(get_message_by_key("Un-authorized","en"))
 
         else:
             if request.path in allowed_route_without_auth:
@@ -41,6 +46,7 @@ class AuthMiddleWare:
                 return self.get_response(request)
     
     def get_request_data(self, request):
+        print("HEADERS : : :: ",request.headers)
         if request.headers:
             return request.headers
         else:

@@ -1,7 +1,8 @@
 msg = {
     "en":{
         "AccountDeleted":"Your Account Is Deleted Please Contact Adminstration!",
-        "AccountDeactivated":"Your Account Is Temperory Deactivated Please Contact Administration!"
+        "AccountDeactivated":"Your Account Is Temperory Deactivated Please Contact Administration!",
+        "Un-authorized": "Un-Authorized request"
     },
     "hi":{
 

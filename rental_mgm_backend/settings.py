@@ -35,6 +35,16 @@ ALLOWED_HOSTS = [
     '6c7e407c8c3c.ngrok.io',
     'bcdf687db21b.ngrok.io',
     'a751820bc4f0.ngrok.io',
+    '75dfc131b26b.ngrok.io',
+    '236fd06348d2.ngrok.io',
+    '5a4328225894.ngrok.io',
+    '25fcbcb1e020.ngrok.io',
+    '183d77dd7598.ngrok.io',
+    '0cfbe7b00f75.ngrok.io',
+    '23da2c78a7c1.ngrok.io',
+    '638c4fe1eacc.ngrok.io',
+    '88e3609cf097.ngrok.io',
+    'c553153f31d7.ngrok.io'
 ]
 
 
@@ -49,7 +59,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'authentication',
-    'utils'
+    'utils',
+    'master'
 ]
 
 
@@ -120,40 +131,40 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-JWT_AUTH = {
-  'JWT_ENCODE_HANDLER':
-  'rest_framework_jwt.utils.jwt_encode_handler',
-  'JWT_DECODE_HANDLER':
-  'rest_framework_jwt.utils.jwt_decode_handler',
-  'JWT_PAYLOAD_HANDLER':
-  'rest_framework_jwt.utils.jwt_payload_handler',
-  'JWT_PAYLOAD_GET_USER_ID_HANDLER':
-  'rest_framework_jwt.utils.jwt_get_user_id_from_payload_handler',
-  'JWT_RESPONSE_PAYLOAD_HANDLER':
-  'rest_framework_jwt.utils.jwt_response_payload_handler',
+# JWT_AUTH = {
+#   'JWT_ENCODE_HANDLER':
+#   'rest_framework_jwt.utils.jwt_encode_handler',
+#   'JWT_DECODE_HANDLER':
+#   'rest_framework_jwt.utils.jwt_decode_handler',
+#   'JWT_PAYLOAD_HANDLER':
+#   'rest_framework_jwt.utils.jwt_payload_handler',
+#   'JWT_PAYLOAD_GET_USER_ID_HANDLER':
+#   'rest_framework_jwt.utils.jwt_get_user_id_from_payload_handler',
+#   'JWT_RESPONSE_PAYLOAD_HANDLER':
+#   'rest_framework_jwt.utils.jwt_response_payload_handler',
  
-  'JWT_SECRET_KEY': 'SELTEROFDREAMSECRETKEY',
-  'JWT_GET_USER_SECRET_KEY': None,
-  'JWT_PUBLIC_KEY': None,
-  'JWT_PRIVATE_KEY': None,
-  'JWT_ALGORITHM': 'HS256',
-  'JWT_VERIFY': True,
-  'JWT_VERIFY_EXPIRATION': True,
-  'JWT_LEEWAY': 0,
-  'JWT_EXPIRATION_DELTA': timedelta(days=30),
-  'JWT_AUDIENCE': None,
-  'JWT_ISSUER': None,
-  'JWT_ALLOW_REFRESH': False,
-  'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=30),
-  'JWT_AUTH_HEADER_PREFIX': 'Bearer',
-  'JWT_AUTH_COOKIE': None,
-}
+#   'JWT_SECRET_KEY': 'SELTEROFDREAMSECRETKEY',
+#   'JWT_GET_USER_SECRET_KEY': None,
+#   'JWT_PUBLIC_KEY': None,
+#   'JWT_PRIVATE_KEY': None,
+#   'JWT_ALGORITHM': 'HS256',
+#   'JWT_VERIFY': True,
+#   'JWT_VERIFY_EXPIRATION': True,
+#   'JWT_LEEWAY': 0,
+#   'JWT_EXPIRATION_DELTA': timedelta(days=30),
+#   'JWT_AUDIENCE': None,
+#   'JWT_ISSUER': None,
+#   'JWT_ALLOW_REFRESH': False,
+#   'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=30),
+#   'JWT_AUTH_HEADER_PREFIX': 'Bearer',
+#   'JWT_AUTH_COOKIE': None,
+# }
 AUTH_USER_MODEL = 'authentication.MyUser'
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
-}
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': [
+#         'rest_framework_simplejwt.authentication.JWTAuthentication',
+#     ],
+# }
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/

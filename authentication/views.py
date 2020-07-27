@@ -16,12 +16,12 @@ from rest_framework_jwt.settings import api_settings
 from jose import jws
 import json
 
-JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
-JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
+# JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
+# JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 
 class UserApiSignup(APIView):
     """
-    User signup Api view to create new users
+    User signup Api view to create new users via normal creds or social
     """
 
     def get (self, request):
@@ -87,7 +87,7 @@ class UserApiSignup(APIView):
 
 class UserApiOtp(APIView):
     """
-    User otp Api view to create new users
+    User otp Api view to verify user phone number and email
     """
 
     def get (self, request):
@@ -108,8 +108,9 @@ class UserApiOtp(APIView):
 
     def post (self, request):
         try:
+            print("DATA : : : ",request.data)
             record = MyUser.objects.get(email=request.data["email"],phone=request.data["phone"],otp=request.data["otp"])
-            print("Fetched Record : : ",record)
+            # print("Fetched Record : : ",record)
             record.phone_verified = True
             record.otp = None
             record.otp_exp = None
@@ -122,6 +123,7 @@ class UserApiOtp(APIView):
             # print("TOKEN : : : :",token)
             return sendSuccess({"user":serializer.data,"msg":"Login Success","token":token})
         except:
+            print("Error : :  : : :",sys.exc_info()[0])
             return sendFailure("Invalid Otp")
 
 
@@ -130,22 +132,22 @@ class UserApiOtp(APIView):
 
 class UserApiLogin(APIView):
     """
-    User otp Api view to create new users
+    User login Api view to allow user to login using creds or social
     """
 
     def post (self, request):
         # print("@@@@@@@@@@@@@@::::",request.data)
         if request.data["log_in_type"] == 0:
-            try:
-                print(request.data)
-                record = MyUser.objects.get(email=request.data["email"],password=request.data["password"])
-                record.last_login = datetime.now()
-                record.save()
-                serializer = UserSerializer(record)
-                token = jws.sign({"user":serializer.data}, 'seKre8',  algorithm='HS256')
-                return sendSuccess({"user":serializer.data,"msg":"Login Success","token":token})
-            except:
-                return sendFailure("Invalid Credentials")
+            # try:
+            print(request.data)
+            record = MyUser.objects.get(email=request.data["email"],password=request.data["password"])
+            record.last_login = datetime.now()
+            record.save()
+            serializer = UserSerializer(record)
+            token = jws.sign({"user":serializer.data}, 'seKre8',  algorithm='HS256')
+            return sendSuccess({"user":serializer.data,"msg":"Login Success","token":token})
+            # except:
+            #     return sendFailure("Invalid Credentials")
         elif request.data["log_in_type"] == 1:
             try:
                 idinfo = id_token.verify_oauth2_token(request.data["token"], grq.Request(), '659153366205-2e9ir8g196l41idvfdu1k3mc0vs3o5o0.apps.googleusercontent.com')
@@ -176,6 +178,9 @@ class UserApiLogin(APIView):
 
 
 class UserDeviceToken(APIView):
+    """
+    User device token Api view to save fcm token of user for notifications
+    """
     def post(self, request):
         print(request.data,request.user_profile)
         device_object = {
@@ -205,6 +210,10 @@ class UserDeviceToken(APIView):
 
 
 class UserLogOut(APIView):
+    """
+    User logout Api view to logout user
+    """
+
     def post(self, request):
         # print(request.data)
         # token_data = jws.decode(request.data['token'], 'seKre8', algorithms=['HS256'])

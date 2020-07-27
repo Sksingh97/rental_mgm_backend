@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from authentication.views import UserApiSignup, UserApiOtp, UserApiLogin, UserDeviceToken, UserLogOut
+from master.views import PropertyTypeApi, LayoutTypeApi, FeatureTypeApi, RuleTypeApi, PriceRangeApi
 from rest_framework_simplejwt import views as jwt_views
 router = routers.DefaultRouter()
 
@@ -28,5 +29,10 @@ urlpatterns = [
     path('api/user/login', UserApiLogin.as_view(), name="Login"),
     path('api/user/token', UserDeviceToken.as_view(), name="Token"),
     path('api/user/logout', UserLogOut.as_view(), name="Logout"),
+    path('api/master/propertytype', PropertyTypeApi.as_view(), name="PropertyType"),
+    path('api/master/layouttype', LayoutTypeApi.as_view(), name="LayoutType"),
+    path('api/master/featuretype', FeatureTypeApi.as_view(), name="FeatureType"),
+    path('api/master/ruletype', RuleTypeApi.as_view(), name="RuleType"),
+    path('api/master/pricerange', PriceRangeApi.as_view(), name="PriceRange"),
     path('admin/', admin.site.urls),
 ]
