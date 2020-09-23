@@ -30,6 +30,8 @@ class MyUser(AbstractUser):
     social_id = models.CharField(max_length=255, unique=True, null=True)
     userName = models.CharField(max_length=255, unique=True, null=True)
     id_deleted = models.BooleanField(default=False)
+    color = models.CharField(max_length=255, blank=True, null=True)
+    lang = models.CharField(max_length=255, blank=True, null=True)
 
 
     class Meta:

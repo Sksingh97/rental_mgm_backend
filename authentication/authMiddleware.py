@@ -26,10 +26,13 @@ class AuthMiddleWare:
                     token_data = self.get_token_data(request_body['Authorization'])
                     print("DATA : :  :",token_data)
                     user_data = self.verify_user(token_data['id'])
+                    if not user_data:
+                        return sendFailureFromMidw(get_message_by_key("Invalid Authorization token","en"))
+
                     # print("MIDDLEWARE : : : will be checked",user_data)
-                    if(user_data['id_deleted']):
+                    if user_data and user_data['id_deleted']:
                         return sendFailureFromMidw(get_message_by_key("AccountDeleted","en"))
-                    if(not user_data['is_active']):
+                    if not user_data['is_active']:
                         return sendFailureFromMidw(get_message_by_key("AccountDeactivated","en"))
                     
                     request.user_profile = json.dumps({"id":user_data["id"]})

@@ -28,23 +28,8 @@ SECRET_KEY = '(68ekuw8(7#jq3lot=7p(6n91gt+!t30w(+b)q0gc(z3*(%epv'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '4e6361e615ca.ngrok.io',
-    'a61cc0026ccd.ngrok.io',
-    '27d605e29eb0.ngrok.io',
-    '4fa9f49c7fa8.ngrok.io',
-    '6c7e407c8c3c.ngrok.io',
-    'bcdf687db21b.ngrok.io',
-    'a751820bc4f0.ngrok.io',
-    '75dfc131b26b.ngrok.io',
-    '236fd06348d2.ngrok.io',
-    '5a4328225894.ngrok.io',
-    '25fcbcb1e020.ngrok.io',
-    '183d77dd7598.ngrok.io',
-    '0cfbe7b00f75.ngrok.io',
-    '23da2c78a7c1.ngrok.io',
-    '638c4fe1eacc.ngrok.io',
-    '88e3609cf097.ngrok.io',
-    'c553153f31d7.ngrok.io'
+    '7c6a40e2ee11.ngrok.io',
+    '127.0.0.1'
 ]
 
 
@@ -60,7 +45,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'authentication',
     'utils',
-    'master'
+    'master',
+    'property',
 ]
 
 
@@ -101,8 +87,12 @@ WSGI_APPLICATION = 'rental_mgm_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'sod',
+        'USER': 'postgres',
+        'PASSWORD': 'admin',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -178,6 +168,9 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+MEDIA_URL =  '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
 # Static files (CSS, JavaScript, Images)

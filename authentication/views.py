@@ -138,16 +138,16 @@ class UserApiLogin(APIView):
     def post (self, request):
         # print("@@@@@@@@@@@@@@::::",request.data)
         if request.data["log_in_type"] == 0:
-            # try:
-            print(request.data)
-            record = MyUser.objects.get(email=request.data["email"],password=request.data["password"])
-            record.last_login = datetime.now()
-            record.save()
-            serializer = UserSerializer(record)
-            token = jws.sign({"user":serializer.data}, 'seKre8',  algorithm='HS256')
-            return sendSuccess({"user":serializer.data,"msg":"Login Success","token":token})
-            # except:
-            #     return sendFailure("Invalid Credentials")
+            try:
+                print(request.data)
+                record = MyUser.objects.get(email=request.data["email"],password=request.data["password"])
+                record.last_login = datetime.now()
+                record.save()
+                serializer = UserSerializer(record)
+                token = jws.sign({"user":serializer.data}, 'seKre8',  algorithm='HS256')
+                return sendSuccess({"user":serializer.data,"msg":"Login Success","token":token})
+            except:
+                return sendFailure("Invalid Credentials")
         elif request.data["log_in_type"] == 1:
             try:
                 idinfo = id_token.verify_oauth2_token(request.data["token"], grq.Request(), '659153366205-2e9ir8g196l41idvfdu1k3mc0vs3o5o0.apps.googleusercontent.com')

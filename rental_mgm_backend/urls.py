@@ -18,9 +18,11 @@ from django.urls import path, include
 from rest_framework import routers
 from authentication.views import UserApiSignup, UserApiOtp, UserApiLogin, UserDeviceToken, UserLogOut
 from master.views import PropertyTypeApi, LayoutTypeApi, FeatureTypeApi, RuleTypeApi, PriceRangeApi
+from property.views import FilterApi, FileUploadView, PropertyApi
 from rest_framework_simplejwt import views as jwt_views
 router = routers.DefaultRouter()
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -34,5 +36,11 @@ urlpatterns = [
     path('api/master/featuretype', FeatureTypeApi.as_view(), name="FeatureType"),
     path('api/master/ruletype', RuleTypeApi.as_view(), name="RuleType"),
     path('api/master/pricerange', PriceRangeApi.as_view(), name="PriceRange"),
+    path('api/filter', FilterApi.as_view(), name="Filter"),
+    path('api/upload/media', FileUploadView.as_view(), name="Mulimedia"),
+    path('api/property', PropertyApi.as_view(), name="Property"),
     path('admin/', admin.site.urls),
 ]
+
+if settings.DEBUG:
+  urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
